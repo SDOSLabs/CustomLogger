@@ -3,13 +3,13 @@
 Librería que permite escribir un log personalizado en un fichero con el objetivo de ser posteriormente estudiado para posible corrección de errores.
 
 
-## Dependencia
+## 1.- Dependencia
 
-```java
+```xml
 implementation 'es.sdos.android:customlogger:1.0.0'
 ```
 
-## Inicialización
+## 2.- Inicialización
 Haremos uso del builder CustomLog.Builder(), el cuál puede configurar los siguientes parámetros:
  - Nombre de la carpeta donde se almacenará la carpeta que contiene los logs. Esta carpeta estará en el raíz del dispositivo. Método:  *.withMainContainerFolderName("prueba")*, **por defecto**: "debug"
  - Nombre de la carpeta que contendrá los ficheros de logs. Método: *.withLogFilesFolder("sample")*, **por defecto**: "log".
@@ -54,7 +54,7 @@ new CustomLog.Builder()
 });
 ```
 
-## Representar mensajes en el Log
+## 3.- Representar mensajes en el Log
 El método necesario para pintar registros en el log es el siguiente:
 
 ### Kotlin
@@ -111,7 +111,7 @@ Fichero después de las escrituras anteriores:
     /***** Java *****/  
     [22/05/2019 11:42:14] Prueba de tipo Java: Test info
 
-## Tipos de mensajes
+## 4.- Tipos de mensajes
 Se pueden representar valores con tres etiquetas por defecto: *LogType.EXCEPTION*, *LogType.INFO* y *LogType.TIMING*.
 Si es necesario añadir más tipos se deberá extender de la clase LogType.FeatureLog y se debe establecer un valor en la variable "name". Ésta será la que se utilice para pintar la cabecera de los logs bajo este tipo personalizado.
 Ejemplo de cabecera: "/***** Custom Type *****/"
@@ -145,35 +145,43 @@ public class JavaCustomType extends LogType.FeatureLog {
     }  
 }
 ```
-## Creación de contadores de tiempo
+## 5.- Creación de contadores de tiempo
 Será posible crear contadores de tiempo para ver cuánto tarda una ejecución específica. De este modo podremos saber cuánto tardan nuestros mappers, métodos, bucles, etc.
 Para ello se debe:
- 1. Inicializar el contador.
+
+### 5.1.- Inicializar el contador.
+#### Kotlin
 ```kotlin
 CustomLog.instance.startTiming("Hola", "Empieza la fiesta")
 ```
+#### Java
 ```java
 CustomLog.getInstance().startTiming("Hola", "Empieza la fiesta");
 ```
- 2. Si lo necesitamos, podemos añadir contadores intermedios antes de la finalización del contador.
+### 5.2.- Si lo necesitamos, podemos añadir contadores intermedios antes de la finalización del contador.
+#### Kotlin
 ```kotlin
 CustomLog.instance.addSplitToTiming("Yeeep 1")
 //- Ejecutamos más código
 CustomLog.instance.addSplitToTiming("Yeeep 2")
 ```
+#### Java
 ```java
 CustomLog.getInstance().addSplitToTiming("Yeeep 1");
 //- Ejecutamos más código
 CustomLog.getInstance().addSplitToTiming("Yeeep 2");
 ```
- 3. Finalizar el contador.
+### 5.3.- Finalizar el contador.
+#### Kotlin
 ```kotlin
 CustomLog.instance.endTiming()
 ```
+#### Java
 ```java
 CustomLog.getInstance().endTiming();
 ```
 ### Ejemplo con un CountDownTimer
+#### Kotlin
 ```kotlin
 CustomLog.instance.startTiming("Hola", "Empieza la fiesta")  
 object : CountDownTimer(3000, 500) {  
@@ -187,7 +195,7 @@ object : CountDownTimer(3000, 500) {
     }  
 }.start()
 ```
-
+#### Java
 ```java
 new CountDownTimer(3000, 500) {  
   
@@ -204,10 +212,15 @@ new CountDownTimer(3000, 500) {
 ```
 
 Resultado en el log:
-    /***** Timing *****/ 
-    [22/05/2019 12:02:32] Start: Hola: Empieza la fiesta: 32 ms, Yeeep: 2968 
-    Hola: Empieza la fiesta: 500 ms, Yeeep: 2468 
-    Hola: Empieza la fiesta: 523 ms, Yeeep: 1945 
-    Hola: Empieza la fiesta: 501 ms, Yeeep: 1444 
-    Hola: Empieza la fiesta: 501 ms, Yeeep: 943 
-    Hola: Empieza la fiesta: end, 2057 ms
+```xml
+/***** Timing *****/ 
+[22/05/2019 12:02:32] Start: 
+Hola: Empieza la fiesta: 32 ms, Yeeep: 2968 
+Hola: Empieza la fiesta: 500 ms, Yeeep: 2468 
+Hola: Empieza la fiesta: 523 ms, Yeeep: 1945 
+Hola: Empieza la fiesta: 501 ms, Yeeep: 1444 
+Hola: Empieza la fiesta: 501 ms, Yeeep: 943 
+Hola: Empieza la fiesta: end, 2057 ms
+```
+    
+    
