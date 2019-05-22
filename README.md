@@ -6,7 +6,7 @@ Librería que permite escribir un log personalizado en un fichero con el objetiv
 ## Dependencia
 
 ```java
-implementation sustituir cuando se suba la librería
+implementation 'es.sdos.android:customlogger:1.0.0'
 ```
 
 ## Inicialización
