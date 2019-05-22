@@ -11,7 +11,6 @@ implementation 'es.sdos.android:customlogger:1.0.0'
 
 ## Inicialización
 Haremos uso del builder CustomLog.Builder(), el cuál puede configurar los siguientes parámetros:
- - Contexto. 
  - Nombre de la carpeta donde se almacenará la carpeta que contiene los logs. Esta carpeta estará en el raíz del dispositivo. Método:  *.withMainContainerFolderName("prueba")*, **por defecto**: "debug"
  - Nombre de la carpeta que contendrá los ficheros de logs. Método: *.withLogFilesFolder("sample")*, **por defecto**: "log".
  - Nombre del fichero de trazas, este nombre será: "DDMM_nombreDelFicheroEstablecido.tra". Método:  *.withFileName("test")*, **por defecto**: "trazas".
