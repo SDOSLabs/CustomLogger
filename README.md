@@ -6,7 +6,7 @@ Librería que permite escribir un log personalizado en un fichero con el objetiv
 ## Dependencia
 
 ```java
-implementation sustituir
+implementation sustituir cuando se suba la librería
 ```
 
 ## Inicialización
@@ -88,32 +88,29 @@ CustomLog.getInstance().writeData(new JavaCustomType(), "Mensaje de prueba de Ja
 
 Fichero después de las escrituras anteriores:
 
-> /***** Manolo *****/ 
-> [22/05/2019 11:42:14] Prueba de tipo Manolo: Test
-> info
-> 
-> /***** Pepito *****/ 
-> [22/05/2019 11:42:14] Prueba de tipo Pepe: Test
-> info
-> 
-> /***** Customsito *****/ 
-> [22/05/2019 11:42:14] Prueba de tipo Custom:
-> Test info
-> 
-> /***** Customsito *****/ 
-> [22/05/2019 11:42:14] 1 - 2 - 3
-> 
-> /***** Exception *****/ 
-> [22/05/2019 11:42:14] Test error
-> 
-> /***** Exception *****/ 
-> [22/05/2019 11:42:14] null
-> 
-> /***** Exception *****/ 
-> [22/05/2019 11:42:14] [Hola, Adiós]
-> 
-> /***** Java *****/ 
-> [22/05/2019 11:42:14] Prueba de tipo Java: Test info
+    /***** Manolo *****/  
+    [22/05/2019 11:42:14] Prueba de tipo Manolo: Test info
+    
+    /***** Pepito *****/  
+    [22/05/2019 11:42:14] Prueba de tipo Pepe: Test info
+    
+    /***** Customsito *****/  
+    [22/05/2019 11:42:14] Prueba de tipo Custom: Test info
+    
+    /***** Customsito *****/  
+    [22/05/2019 11:42:14] 1 - 2 - 3
+    
+    /***** Exception *****/  
+    [22/05/2019 11:42:14] Test error
+    
+    /***** Exception *****/  
+    [22/05/2019 11:42:14] null
+    
+    /***** Exception *****/  
+    [22/05/2019 11:42:14] [Hola, Adiós]
+
+    /***** Java *****/  
+    [22/05/2019 11:42:14] Prueba de tipo Java: Test info
 
 ## Tipos de mensajes
 Se pueden representar valores con tres etiquetas por defecto: *LogType.EXCEPTION*, *LogType.INFO* y *LogType.TIMING*.
@@ -208,11 +205,10 @@ new CountDownTimer(3000, 500) {
 ```
 
 Resultado en el log:
-> /***** Timing *****/
-> [22/05/2019 12:02:32] Start:
-> Hola: Empieza la fiesta: 32 ms, Yeeep: 2968
-> Hola: Empieza la fiesta: 500 ms, Yeeep: 2468
-> Hola: Empieza la fiesta: 523 ms, Yeeep: 1945
-> Hola: Empieza la fiesta: 501 ms, Yeeep: 1444
-> Hola: Empieza la fiesta: 501 ms, Yeeep: 943
-> Hola: Empieza la fiesta: end, 2057 ms
+    /***** Timing *****/ 
+    [22/05/2019 12:02:32] Start: Hola: Empieza la fiesta: 32 ms, Yeeep: 2968 
+    Hola: Empieza la fiesta: 500 ms, Yeeep: 2468 
+    Hola: Empieza la fiesta: 523 ms, Yeeep: 1945 
+    Hola: Empieza la fiesta: 501 ms, Yeeep: 1444 
+    Hola: Empieza la fiesta: 501 ms, Yeeep: 943 
+    Hola: Empieza la fiesta: end, 2057 ms
