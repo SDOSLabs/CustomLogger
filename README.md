@@ -6,7 +6,7 @@ Librería que permite escribir un log personalizado en un fichero con el objetiv
 ## 1.- Dependencia
 
 ```xml
-implementation 'es.sdos.android:customlogger:1.0.0'
+implementation 'es.sdos.android:customlogger:1.0.1'
 ```
 
 ## 2.- Inicialización
@@ -17,11 +17,12 @@ Haremos uso del builder CustomLog.Builder(), el cuál puede configurar los sigui
  - Días necesarios para limpiar el log. Método: *.withDaysToCleanLog(8)*, **por defecto**: 7.
  - Tiempo (**en milisegundos**) para lanzar el proceso de escritura en el log en segundo plano. Método: *.withTimeToWriteIntoLog(1500)*, **por defecto**: 3 segundos.
 
-Posteriormente llamaremos al método *build* que recibe dos parámetros:
-- Contexto. 
-- Método que se ejecutará si los permisos de almacenamiento no están aceptados.
+Posteriormente llamaremos al método *build* que recibe un parámetro:
+- Application. 
 
 No es necesario añadir "/" puesto que ya se añade automáticamente.
+
+Los permisos de almacenamiento se deben aceptar a través de una notificación que aparecerá en el dispositivo.
 
 ### Kotlin
 ```kotlin
@@ -32,9 +33,7 @@ CustomLog.Builder()
     .withFileName("kotlin")  
     .withDaysToCleanLog(8)  
     .withTimeToWriteIntoLog(1000)  
-    .build(this) {  
-  requestExternalStoragePermission(REQUEST_STORAGE_PERMISSION)  
-}
+    .build(CustomApplication.instance)
 ```
 ### Java
 ```java
@@ -45,13 +44,7 @@ new CustomLog.Builder()
         .withFileName("java")  
         .withDaysToCleanLog(8)  
         .withTimeToWriteIntoLog(1000)  
-        .build(this, new Function0<Unit>() {  
-        @Override  
-        public Unit invoke() {  
-	        LogExtensionsKt.requestExternalStoragePermission(JavaActivity.this, 100);  
-	        return null;  
-	    }  
-});
+        .build(CustomApplication.getInstance());
 ```
 
 ## 3.- Representar mensajes en el Log
