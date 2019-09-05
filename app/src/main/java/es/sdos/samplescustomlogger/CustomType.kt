@@ -1,6 +1,6 @@
 package es.sdos.samplescustomlogger
 
-import es.sdos.customlogger.LogType
+import es.sdos.customlogger.log.LogType
 
 object CustomType : LogType.FeatureLog() {
     override var name: String = "Customsito"

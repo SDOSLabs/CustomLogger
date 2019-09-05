@@ -1,10 +1,18 @@
-package es.sdos.customlogger
+package es.sdos.customlogger.log
 
+import android.app.Application
 import android.content.Context
 import android.os.Environment
 import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
+import es.sdos.customlogger.*
+import es.sdos.customlogger.util.RequestStoragePermissionActivity
+import es.sdos.customlogger.common.*
+import es.sdos.customlogger.notification.NotificationType
+import es.sdos.customlogger.notification.Notifications
+import es.sdos.customlogger.util.CustomTimingLogger
+import es.sdos.customlogger.util.registerVisibilityListener
 import java.io.File
 import java.io.FileWriter
 import java.util.*
@@ -18,19 +26,29 @@ class CustomLog {
                 field = if (value <= 0) DEFAULT_TIME_TO_WRITE_INTO_LOG else value
             }
 
-        private var mainContainerFolderName: String = DEFAULT_MAIN_CONTAINER_FOLDER_NAME
+        private var mainContainerFolderName: String =
+            DEFAULT_MAIN_CONTAINER_FOLDER_NAME
             set(value) {
-                field = formatFolder(value, DEFAULT_MAIN_CONTAINER_FOLDER_NAME)
+                field = formatFolder(
+                    value,
+                    DEFAULT_MAIN_CONTAINER_FOLDER_NAME
+                )
             }
 
         private var logFilesFolder = DEFAULT_LOG_FILES_FOLDER
             set(value) {
-                field = formatFolder(value, DEFAULT_MAIN_CONTAINER_FOLDER_NAME)
+                field = formatFolder(
+                    value,
+                    DEFAULT_MAIN_CONTAINER_FOLDER_NAME
+                )
             }
 
         private var fileName = DEFAULT_FILE_NAME
             set(value) {
-                field = formatFileName(value, DEFAULT_FILE_NAME)
+                field = formatFileName(
+                    value,
+                    DEFAULT_FILE_NAME
+                )
             }
 
         private var daysToCleanLog = DEFAULT_DAYS_TO_CLEAN_LOG
@@ -63,30 +81,41 @@ class CustomLog {
             return this
         }
 
-        fun build(context: Context, executeIfExternalStoragePermissionNotGranted: () -> Unit) : CustomLog {
-            return CustomLog.init(context,
+        fun build(application: Application) : CustomLog {
+            return init(
+                application,
                 this.mainContainerFolderName,
                 this.logFilesFolder,
                 this.fileName,
                 this.daysToCleanLog,
-                this.timeToWriteIntoLog,
-                executeIfExternalStoragePermissionNotGranted)
+                this.timeToWriteIntoLog
+            )
         }
     }
 
     companion object {
         //region Members
+        @Volatile
+        lateinit var application: Application
+
+        @Volatile
+        var applicationVisible = false
+            private set
+
         @JvmStatic
         @Volatile
         var instance: CustomLog = CustomLog()
             private set
+
+        @Volatile private var permissionNotificationDisplayed: Boolean = false
 
         private var timingLogger: CustomTimingLogger? = null
 
         private var customExceptionHandler: Thread.UncaughtExceptionHandler? = null
 
         private var timeToWriteIntoLog = DEFAULT_TIME_TO_WRITE_INTO_LOG
-        private var mainContainerFolderName: String? = DEFAULT_MAIN_CONTAINER_FOLDER_NAME
+        private var mainContainerFolderName: String? =
+            DEFAULT_MAIN_CONTAINER_FOLDER_NAME
         private var logFilesFolder = DEFAULT_LOG_FILES_FOLDER
         private var fileName = DEFAULT_FILE_NAME
         private var daysToCleanLog = DEFAULT_DAYS_TO_CLEAN_LOG
@@ -97,21 +126,32 @@ class CustomLog {
         //endregion
 
         //region Private Methods
-        private fun init(context: Context?,
+        private fun init(application: Application,
                          mainContainerFolderName: String = DEFAULT_MAIN_CONTAINER_FOLDER_NAME,
                          logFilesFolder: String = DEFAULT_LOG_FILES_FOLDER,
                          fileName: String = DEFAULT_FILE_NAME,
                          daysToCleanLog: Int = DEFAULT_DAYS_TO_CLEAN_LOG,
-                         timeToWriteIntoLog: Long = DEFAULT_TIME_TO_WRITE_INTO_LOG,
-                         executeIfExternalStoragePermissionNotGranted: () -> Unit) : CustomLog {
+                         timeToWriteIntoLog: Long = DEFAULT_TIME_TO_WRITE_INTO_LOG
+        ) : CustomLog {
             customExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
-            timingLogger = CustomTimingLogger(null, null)
-            this.daysToCleanLog = daysToCleanLog
-            setUpLocationParams(mainContainerFolderName, logFilesFolder, fileName, timeToWriteIntoLog)
-            if (context != null &&
-                !context.hasExternalStoragePermission()) {
+            timingLogger =
+                CustomTimingLogger(null, null)
+            Companion.daysToCleanLog = daysToCleanLog
+            setUpLocationParams(
+                mainContainerFolderName,
+                logFilesFolder,
+                fileName,
+                timeToWriteIntoLog
+            )
+            if (!application.hasExternalStoragePermission()) {
+                Companion.application = application
+                Companion.application.registerVisibilityListener { applicationVisible ->
+                    Companion.applicationVisible = applicationVisible
+                }
                 Log.e(CustomLog::class.java.simpleName, "Storage permission not granted")
-                executeIfExternalStoragePermissionNotGranted()
+                requestWritePermissionNotification(
+                    application.applicationContext
+                )
 
             } else {
                 needResetLog()
@@ -138,7 +178,10 @@ class CustomLog {
                 }
             }
 
-            deleteLogFileIfIsNeeded(daysToCleanLog, filteredFiles)
+            deleteLogFileIfIsNeeded(
+                daysToCleanLog,
+                filteredFiles
+            )
         }
 
         private fun deleteLogFileIfIsNeeded(daysToCleanLog: Int, filteredFiles: ArrayList<String>) {
@@ -170,7 +213,9 @@ class CustomLog {
 
                         //- Borramos los ficheros que no estén comprendidos en el número máximo de días a almacenar
                         if (daysToCleanLog in 1..(numOfDays - 1)) {
-                            deleteNotNeededFiles(candidateFileToDelete)
+                            deleteNotNeededFiles(
+                                candidateFileToDelete
+                            )
                         }
 
                     } catch (e: Exception) {
@@ -193,11 +238,12 @@ class CustomLog {
         private fun setUpLocationParams(mainContainerFolderName: String = DEFAULT_MAIN_CONTAINER_FOLDER_NAME,
                                         logFilesFolder: String = DEFAULT_LOG_FILES_FOLDER,
                                         fileName: String = DEFAULT_FILE_NAME,
-                                        timeToWriteIntoLog: Long = DEFAULT_TIME_TO_WRITE_INTO_LOG) {
-            this.mainContainerFolderName = mainContainerFolderName
-            this.logFilesFolder = logFilesFolder
-            this.fileName = fileName
-            this.timeToWriteIntoLog = timeToWriteIntoLog
+                                        timeToWriteIntoLog: Long = DEFAULT_TIME_TO_WRITE_INTO_LOG
+        ) {
+            Companion.mainContainerFolderName = mainContainerFolderName
+            Companion.logFilesFolder = logFilesFolder
+            Companion.fileName = fileName
+            Companion.timeToWriteIntoLog = timeToWriteIntoLog
         }
 
         private fun formatFolder(name: String?, default: String): String {
@@ -206,6 +252,29 @@ class CustomLog {
 
         private fun formatFileName(name: String?, default: String): String {
             return if (TextUtils.isEmpty(name)) default else "_$name.tra"
+        }
+
+        private fun requestWritePermissionNotification(context: Context) {
+            if (permissionNotificationDisplayed) {
+                return
+            }
+            permissionNotificationDisplayed = true
+
+            val pendingIntent =
+                RequestStoragePermissionActivity.createPendingIntent(
+                    context
+                )
+            val contentTitle = context.getString(
+                R.string.customlog__permission_notification_title
+            )
+            val packageName = context.packageName
+            val contentText =
+                context.getString(R.string.customlog__permission_notification_text, packageName)
+
+            Notifications.showNotification(
+                context, contentTitle, contentText, pendingIntent,
+                R.id.customlog__notification_write_permission, NotificationType.CUSTOMLOG_LOW
+            )
         }
         //endregion
     }
@@ -251,10 +320,15 @@ class CustomLog {
 
     //region Private Methods
     private fun writePendingData() {
-        typeWithInfoMap.forEach {
-            writeInfoIntoLogFile(it.key, it.value)
+        try {
+            typeWithInfoMap.forEach {
+                writeInfoIntoLogFile(it.key, it.value)
+            }
+            typeWithInfoMap.clear()
+
+        } catch (e: Exception) {
+            Log.e(CustomLog::class.java.simpleName, e.message)
         }
-        typeWithInfoMap.clear()
     }
 
     private fun <T : LogType> writeInfoIntoLogFile(type: T, messageList: List<String?>): Boolean {
@@ -288,7 +362,9 @@ class CustomLog {
                 fileWriter.append(headerLog)
                     .appendLineSeparator(false)
             }
-            fileWriter.wrapperMessageWithDate(message, DATE_FORMAT_TO_TIME_INTO_LOG_FILE)
+            fileWriter.wrapperMessageWithDate(message,
+                DATE_FORMAT_TO_TIME_INTO_LOG_FILE
+            )
                 .appendLineSeparator(true)
             fileWriter.close()
             res = true

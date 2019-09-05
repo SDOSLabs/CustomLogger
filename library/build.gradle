@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
 
-def customLoggerVersion = "1.0.0"
+def customLoggerVersion = "1.0.1"
 
 ext {
     publishedGroupId = 'es.sdos.customlogger'

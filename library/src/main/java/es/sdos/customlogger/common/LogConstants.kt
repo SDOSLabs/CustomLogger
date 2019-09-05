@@ -1,4 +1,4 @@
-package es.sdos.customlogger
+package es.sdos.customlogger.common
 
 import java.text.SimpleDateFormat
 import java.util.*

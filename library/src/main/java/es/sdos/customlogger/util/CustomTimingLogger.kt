@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package es.sdos.customlogger
+package es.sdos.customlogger.util
 
 import android.util.Log
 
 import android.os.SystemClock
+import es.sdos.customlogger.BuildConfig
 
 /**
  * A utility class to help log timings splits throughout a method call.
