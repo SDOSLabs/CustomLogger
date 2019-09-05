@@ -215,5 +215,11 @@ Hola: Empieza la fiesta: 501 ms, Yeeep: 1444
 Hola: Empieza la fiesta: 501 ms, Yeeep: 943 
 Hola: Empieza la fiesta: end, 2057 ms
 ```
-    
+ 
+# Changelog
+## Version 1.0.1
+- Corregido el [Issue #1](https://git.sdos.es/android/utils/SDOSLog/issues/1)
+
+## Version 1.0.0
+- Primera versión   
     
