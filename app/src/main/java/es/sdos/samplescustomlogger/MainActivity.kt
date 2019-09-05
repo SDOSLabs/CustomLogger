@@ -4,9 +4,8 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v7.app.AppCompatActivity
-import es.sdos.customlogger.CustomLog
-import es.sdos.customlogger.LogType
-import es.sdos.customlogger.requestExternalStoragePermission
+import es.sdos.customlogger.log.CustomLog
+import es.sdos.customlogger.log.LogType
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,9 +42,7 @@ class MainActivity : AppCompatActivity() {
             .withFileName("kotlin")
             .withDaysToCleanLog(8)
             .withTimeToWriteIntoLog(1000)
-            .build(this) {
-                requestExternalStoragePermission(REQUEST_STORAGE_PERMISSION)
-            }
+            .build(CustomApplication.instance)
     }
 
     private fun writeInfoIntoLog() {

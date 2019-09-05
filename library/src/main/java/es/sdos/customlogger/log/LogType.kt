@@ -1,4 +1,4 @@
-package es.sdos.customlogger
+package es.sdos.customlogger.log
 
 sealed class LogType {
     abstract val name : String

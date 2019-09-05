@@ -21,6 +21,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "http://delivery-server.sdos.es/nexus/repository/maven-android/" }
     }
 }
 
