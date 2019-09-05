@@ -2,4 +2,15 @@
           package="es.sdos.customlogger">
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <application>
+        <activity
+                android:name=".util.RequestStoragePermissionActivity"
+                android:excludeFromRecents="true"
+                android:icon="@drawable/ic_notification"
+                android:label="@string/customlog__storage_permission_activity_label"
+                android:taskAffinity="es.sdos.customlogger.${applicationId}"
+                android:theme="@style/Customlog_Theme.Transparent"
+        />
+    </application>
 </manifest>

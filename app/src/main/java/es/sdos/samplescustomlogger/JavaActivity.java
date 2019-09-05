@@ -4,11 +4,9 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
-import es.sdos.customlogger.CustomLog;
-import es.sdos.customlogger.LogExtensionsKt;
-import es.sdos.customlogger.LogType;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
+import es.sdos.customlogger.log.CustomLog;
+import es.sdos.customlogger.log.LogType;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -64,13 +62,7 @@ public class JavaActivity extends AppCompatActivity {
                 .withFileName("java")
                 .withDaysToCleanLog(8)
                 .withTimeToWriteIntoLog(1000)
-                .build(this, new Function0<Unit>() {
-                    @Override
-                    public Unit invoke() {
-                        LogExtensionsKt.requestExternalStoragePermission(JavaActivity.this, 100);
-                        return null;
-                    }
-                });
+                .build(CustomApplication.getInstance());
     }
 
     private void registerTiming() {
