@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">customlogger</string>
+    <string name="customlog__permission_not_granted">Permiso de almacenamiento no aceptado</string>
+    <string name="customlog__permission_notification_title">Es necesario autorizar permisos</string>
+    <string name="customlog__permission_notification_text">Click para habilitar permisos de almacenamiento para %s.</string>
+    <string name="customlog__notification_channel_low">CustomLogger Baja Prioridad</string>
+    <string name="customlog__notification_channel_result">CustomLogger Resultado</string>
+    <string name="customlog__storage_permission_activity_label">Permiso de almacenamiento</string>
+</resources>

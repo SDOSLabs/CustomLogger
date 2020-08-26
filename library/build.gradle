@@ -1,0 +1,94 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
+apply plugin: 'com.github.dcendents.android-maven'
+
+def customLoggerVersion = "1.0.1"
+
+ext {
+    publishedGroupId = 'es.sdos.customlogger'
+    libraryName = customLoggerVersion
+    artifact = 'customlogger'
+    libraryDescription = 'Library with a Custom Logger'
+    libraryVersion = customLoggerVersion
+    developerId = 'Sdos'
+    developerName = 'Sdos'
+    developerEmail = 'android.dev@s-dos.es'
+
+}
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName customLoggerVersion
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+android.libraryVariants.all { variant ->
+
+    def varName = variant.name.capitalize()
+
+    task("generateCustomLoggerModule", type: Copy, dependsOn: "assemble${varName}", overwrite: true) {
+
+        def destDir = new File(rootDir.path + "/" + 'customlogger')
+
+        from 'build/outputs'
+        into destDir
+        rename 'app-release.aar',
+                'customlogger-' + android.defaultConfig.versionName + ".aar"
+    }
+}
+
+//generate dependencies
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+                groupId publishedGroupId
+                artifactId artifact
+                version customLoggerVersion
+
+                // Add your description here
+                name libraryName
+                description libraryDescription
+
+                developers {
+                    developer {
+                        id developerId
+                        name developerName
+                        email developerEmail
+                    }
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
+}

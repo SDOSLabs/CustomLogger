@@ -83,3 +83,9 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+# OS
+.DS_Store
+app/libs/valnif/META-INF/MANIFEST.MF
+gradlew2
+customlogger/logs/manifest-merger-release-report.txt
